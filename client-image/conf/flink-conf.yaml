@@ -27,8 +27,15 @@ state.checkpoints.num-retained: 1
 #high-availability.zookeeper.path.root: /flink
 #high-availability.cluster-id: profileservice
 #high-availability.storageDir: s3://our_path
-
+# classloader.resolve-order: parent-first
 execution.checkpointing.interval: 10000
 state.backend: filesystem
 state.checkpoints.dir: file:///ckp/checkpoints
 state.savepoints.dir: file:///ckp/savepoints
+
+fs.s3a.connection.maximum: 200
+fs.s3.connection.maximum: 200
+spark.hadoop.fs.s3.maxConnections: 1000
+fs.output.always-create-directory: true
+fs.overwrite-files: true
+fs.allowed-fallback-filesystems: s3;wasb

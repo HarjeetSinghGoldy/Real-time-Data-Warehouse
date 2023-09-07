@@ -127,7 +127,7 @@ WITH (
   'table.type' = 'COPY_ON_WRITE', -- this creates a MERGE_ON_READ table, by default is COPY_ON_WRITE
   'read.tasks' = '1', -- default is 4 ,required more resource
   'read.streaming.enabled' = 'true',  -- this option enable the streaming read
-  'read.streaming.start-commit' = '20210712134429', -- specifies the start commit instant time
+  'read.streaming.start-commit' = '0', -- specifies the start commit instant time
   'read.streaming.check-interval' = '4' -- specifies the check interval for finding new source commits, default 60s.
 );
 

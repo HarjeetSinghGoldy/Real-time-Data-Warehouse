@@ -18,7 +18,7 @@ CREATE TABLE datasource.accident_claims WITH (
                                             'scan.startup.mode' = 'earliest-offset'
                                             ) LIKE datasource.postgres.`claims.accident_claims` ( EXCLUDING OPTIONS);
 
-
+SELECT count(*) FROM datasource.accident_claims;
 CREATE TABLE datasource.members WITH (
                                     'connector' = 'kafka',
                                     'topic' = 'pg_claims.claims.members',
@@ -97,7 +97,7 @@ SELECT claim_id,
        ts_updated,
        SUBSTRING(claim_date, 0, 9)
 FROM datasource.accident_claims;
-
+select count(*) from default_catalog.dwd.accident_claims;
 INSERT INTO dwd.members
 SELECT id,
        first_name,
@@ -225,3 +225,45 @@ WHERE ac.claim_status <> 'DENIED'
 GROUP BY m.insurance_company, ac.accident_detail;
 
 
+
+
+
+CREATE DATABASE IF NOT EXISTS dws;
+
+CREATE TABLE dws.accident_claims
+(
+    claim_id            BIGINT,
+    claim_total         DOUBLE,
+    claim_total_receipt VARCHAR(50),
+    claim_currency      VARCHAR(3),
+    member_id           INT,
+    accident_date       VARCHAR(20),
+    accident_type       VARCHAR(20),
+    accident_detail     VARCHAR(20),
+    claim_date          VARCHAR(20),
+    claim_status        VARCHAR(10),
+    ts_created          VARCHAR(20),
+    ts_updated          VARCHAR(20),
+    ds                  VARCHAR(20),
+    PRIMARY KEY (claim_id) NOT ENFORCED
+) WITH (
+      'connector' = 'elasticsearch-7',
+      'hosts' = 'http://elasticsearch:9200', 
+      'index' = 'claim_id'
+      );
+
+INSERT INTO dws.accident_claims
+SELECT claim_id,
+       claim_total,
+       claim_total_receipt,
+       claim_currency,
+       member_id,
+       accident_date,
+       accident_type,
+       accident_detail,
+       claim_date,
+       claim_status,
+       ts_created,
+       ts_updated,
+       SUBSTRING(claim_date, 0, 9)
+FROM datasource.accident_claims;
